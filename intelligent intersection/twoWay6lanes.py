@@ -46,6 +46,11 @@ MAX_ACCEL = 3
 #DECEL = 3.5
 STOP_LINE = 15.0
 
+low_vol = 400
+high_vol = 600
+depart_rate = {"time_interval": 300, "vol_we_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ], "vol_ew_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ], \
+        "vol_ns_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ], "vol_sn_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ]}
+lane_id = ["end1_junction_0", "end1_junction_1", "end1_junction_2", "end2_junction_0", "end2_junction_1", "end2_junction_2","end3_junction_0", "end3_junction_1", "end3_junction_2","end4_junction_0", "end4_junction_1", "end4_junction_2"]
 
 
 def add_single_platoon(plexe, topology, step, lane):
