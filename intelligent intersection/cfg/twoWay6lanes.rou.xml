@@ -1,6 +1,6 @@
 <routes>
-	<vType id="vtypeauto" accel="5" decel="10" sigma="0.0" length="4"
-		   minGap="0" maxSpeed="36" color="1,0,0" probability="1"
+	<vType id="vtypeauto" accel="3" decel="5" sigma="1" length="5"
+		   minGap="2" maxSpeed="10" color="1,0,0" probability="1"
 		   carFollowModel="CC" tauEngine="0.5" omegaN="0.2" xi="1" c1="0.5"
 		   lanesCount="4" ccAccel="4" ploegKp="0.2" ploegKd="0.7"
 		   ploegH="0.5" />
@@ -8,18 +8,33 @@
 
 	<route id="route_0" edges="end1_junction junction_end4"/>
 	<route id="route_1" edges="end1_junction junction_end3"/>
-	<route id="route_2" edges="end1_junction junction_end2"/>	
+	<route id="route_2" edges="end1_junction junction_end2"/>
 
-	<route id="route_3" edges="end2_junction junction_end1"/>	
+	<route id="route_3" edges="end2_junction junction_end1"/>
 	<route id="route_4" edges="end2_junction junction_end4"/>
 	<route id="route_5" edges="end2_junction junction_end3"/>
 
 	<route id="route_6" edges="end3_junction junction_end2"/>
-	<route id="route_7" edges="end3_junction junction_end1"/>	
+	<route id="route_7" edges="end3_junction junction_end1"/>
 	<route id="route_8" edges="end3_junction junction_end4"/>
 
-	<route id="route_9" edges="end4_junction junction_end3"/>	
+	<route id="route_9" edges="end4_junction junction_end3"/>
 	<route id="route_10" edges="end4_junction junction_end2"/>
 	<route id="route_11" edges="end4_junction junction_end1"/>
-	
+
+	<!-- <vType id="vtypeauto" accel="3" decel="5" sigma="1" length="5" minGap="2" maxSpeed="10" guiShape="passenger"/>
+
+	<route id="route_10" edges="51o 1i 2o 52i" />
+  <route id="route_11" edges="51o 1i 4o 54i" />
+  <route id="route_9" edges="51o 1i 3o 53i" />
+  <route id="route_7" edges="53o 3i 4o 54i" />
+  <route id="route_8" edges="53o 3i 1o 51i" />
+  <route id="route_6" edges="53o 3i 2o 52i" />
+  <route id="route_4" edges="52o 2i 1o 51i" />
+  <route id="route_5" edges="52o 2i 3o 53i" />
+  <route id="route_3" edges="52o 2i 4o 54i" />
+  <route id="route_1" edges="54o 4i 3o 53i" />
+  <route id="route_2" edges="54o 4i 2o 52i" />
+  <route id="route_0" edges="54o 4i 1o 51i" /> -->
+
 </routes>
