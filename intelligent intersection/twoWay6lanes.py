@@ -75,10 +75,15 @@ def add_single_platoon(plexe, topology, step, lane):
 
 
 
-def add_platoons(plexe, topology, step):
+def add_platoons(plexe, topology, step, prob):
+    print(prob)
+    veh_num_local = 0
     for lane in range(LANE_NUM):    # lane 0~11
-        if random.random() < ADD_PLATOON_PRO:
+        if random.uniform(0, 1) < prob[lane]:
+            # print(lane, step)
             add_single_platoon(plexe, topology, step, lane)
+            veh_num_local += 1
+    return veh_num_local
 
 
 def compute_leaving_time(veh):
