@@ -104,13 +104,14 @@ def main():
     topology = {}
     serving_list = []  # each element: [veh, route, leaving_time, priority]
     serving_list_veh_only = []  # each element: veh
+    veh_num = 0
 
     while step < 360000:  # 1 hour
 
         traci.simulationStep()
 
-        fuel_consumption_external_model += get_instant_fuel_external_model(lane_id)
-        fuel_consumption_sumo += get_instant_fuel_sumo(lane_id)
+        # fuel_consumption_external_model += get_instant_fuel_external_model(lane_id)
+        # fuel_consumption_sumo += get_instant_fuel_sumo(lane_id)
 
         if step % ADD_PLATOON_STEP == 0:  # add new platoon every X steps
             t = step // ADD_PLATOON_STEP
