@@ -104,9 +104,25 @@ def main():
 
         traci.simulationStep()
 
-        if step % ADD_PLATOON_STEP == 0:  # add new platoon every X steps
-            add_platoons(plexe, topology, step)
+        fuel_consumption_external_model += get_instant_fuel_external_model(lane_id)
+        fuel_consumption_sumo += get_instant_fuel_sumo(lane_id)
 
+        if step % ADD_PLATOON_STEP == 0:  # add new platoon every X steps
+            t = step // ADD_PLATOON_STEP
+            if t < 1800:
+                pEW = depart_rate["vol_ew_main"][t // depart_rate["time_interval"]] / 3600
+                pWE = depart_rate["vol_we_main"][t // depart_rate["time_interval"]] / 3600
+                pNS = depart_rate["vol_ns_main"][t // depart_rate["time_interval"]] / 3600
+                pSN = depart_rate["vol_sn_main"][t // depart_rate["time_interval"]] / 3600
+                pES = pEW/3
+                pEN = pEW/3
+                pSW = pEW/3
+                pSE = pEW/3
+                pWN = pWE/3
+                pWS = pWE/3
+                pNE = pWE/3
+                pNW = pWE/3
+                veh_num += add_platoons(plexe, topology, step, [pNW, pNS, pNE, pEN, pEW, pES, pSE, pSN, pSW, pWS, pWE, pWN])
 
         # check all leaders to decide whether add to serving list or delete from topology
         deleted_veh = []
