@@ -34,8 +34,8 @@ conflict_matrix = {
     11:[1, 2, 4, 8]
     }
 
-VEHICLE_LENGTH = 5
-DISTANCE = 7  # inter-vehicle distance
+VEHICLE_LENGTH = 4
+DISTANCE = 6  # inter-vehicle distance
 LANE_NUM = 12
 PLATOON_SIZE = 1
 SPEED = 10  # m/s
@@ -48,8 +48,8 @@ MAX_ACCEL = 3
 #DECEL = 3.5
 STOP_LINE = 15.0
 
-low_vol = 400
-high_vol = 600
+low_vol = 250
+high_vol = 400
 depart_rate = {"time_interval": 300, "vol_we_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ], "vol_ew_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ], \
         "vol_ns_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ], "vol_sn_main": [low_vol + (high_vol - low_vol) / 5 * i for i in range(6) ]}
 lane_id = ["end1_junction_0", "end1_junction_1", "end1_junction_2", "end2_junction_0", "end2_junction_1", "end2_junction_2","end3_junction_0", "end3_junction_1", "end3_junction_2","end4_junction_0", "end4_junction_1", "end4_junction_2"]
@@ -58,12 +58,13 @@ def add_single_platoon(plexe, topology, step, lane):
     for i in range(PLATOON_SIZE):
         vid = "v.%d.%d.%d" %(step/ADD_PLATOON_STEP, lane, i)
         routeID = "route_%d" %lane   # route 0~11, one-to-one map with lane
-        traci.vehicle.add(vid, routeID, departPos=str(100-i*(VEHICLE_LENGTH+DISTANCE)), departSpeed=str(5), departLane=str(lane%3), typeID="vtypeauto")
+        traci.vehicle.add(vid, routeID, departSpeed=str(10), departLane=str(lane%3), typeID="vtypeauto")
         plexe.set_path_cacc_parameters(vid, DISTANCE, 2, 1, 0.5)
         plexe.set_cc_desired_speed(vid, SPEED)
         plexe.set_acc_headway_time(vid, 1.5)
         plexe.use_controller_acceleration(vid, False)
-        # plexe.set_fixed_lane(vid, lane%3, False)
+        plexe.set_fixed_lane(vid, lane%3, False)
+        # print(vid, lane)
         traci.vehicle.setSpeedMode(vid, 0)
         if i == 0:
             plexe.set_active_controller(vid, ACC)
@@ -77,7 +78,7 @@ def add_single_platoon(plexe, topology, step, lane):
 
 
 def add_platoons(plexe, topology, step, prob):
-    print(prob)
+    # print(prob)
     veh_num_local = 0
     for lane in range(LANE_NUM):    # lane 0~11
         if random.uniform(0, 1) < prob[lane]:
@@ -109,7 +110,7 @@ def main():
     fuel_consumption_sumo = 0
     veh_num = 0
 
-    while step < 3800:  # 1 hour
+    while step < 4500:  # 1 hour
 
         traci.simulationStep()
         fuel_consumption_external_model += get_instant_fuel_external_model(lane_id)
@@ -159,8 +160,8 @@ def main():
         # delete vehcles from the list which has already passed the intersection
         serving_list[:] = [element for element in serving_list if traci.vehicle.getDistance(element[0]) < 400 + PLATOON_LENGTH + STOP_LINE]
         serving_list_veh_only = [element[0] for element in serving_list]
-        print(serving_list)
-        print(serving_list_veh_only)
+        # print(serving_list)
+        # print(serving_list_veh_only)
 
         # update leaving_time for priority 0 and update speed for priority 1
         for i in range(len(serving_list)):  # serving_list element = [veh, route, leaving_time, priority]
@@ -185,7 +186,7 @@ def main():
                     serving_list[i][3] = 0
                     distance = 400 + PLATOON_LENGTH + STOP_LINE - traci.vehicle.getDistance(veh_i)
                     desired_speed = sqrt(2 * MAX_ACCEL * distance + (traci.vehicle.getSpeed(veh_i))**2)
-                    plexe.set_cc_desired_speed(veh_i, desired_speed)
+                    plexe.set_cc_desired_speed(veh_i, min(desired_speed, SPEED))
                     serving_list[i][2] = (desired_speed - traci.vehicle.getSpeed(veh_i)) / MAX_ACCEL
                     # print(desired_speed, MAX_ACCEL, serving_list[i][2])
                     #serving_list[i][2] = compute_leaving_time(veh_i)
@@ -200,7 +201,7 @@ def main():
                     desired_speed = current_speed - decel * max_leaving_time
                     #desired_speed = (distance_to_stop_line) / max_leaving_time
                     print("desired_speed: ", desired_speed)
-                    plexe.set_cc_desired_speed(veh_i, desired_speed)
+                    plexe.set_cc_desired_speed(veh_i, min(desired_speed, SPEED))
                     serving_list[i][2] = (distance_to_stop_line + PLATOON_LENGTH + 2*STOP_LINE)/current_speed
                     # print("case2 ", distance_to_stop_line, current_speed, serving_list[i][2])
                     """
@@ -229,9 +230,9 @@ def main():
         step += 1
     print(veh_num)
     print("fuel consumption external model : ", fuel_consumption_external_model)
-    print("average fuel consumption external model : ", fuel_consumption_external_model/(2*veh_num))
+    print("average fuel consumption external model : ", fuel_consumption_external_model/(1000*veh_num))
     print("fuel consumption sumo : ", fuel_consumption_sumo)
-    print("average fuel consumption sumo : ", fuel_consumption_sumo / (2*veh_num))
+    print("average fuel consumption sumo : ", fuel_consumption_sumo / (1000*veh_num))
     traci.close()
 
 
